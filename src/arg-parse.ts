@@ -10,7 +10,12 @@ export const initArgumentParser = () => {
       help: 'Path to a folder with DialogFlow agent.' 
     }
   );
-  
+  argParser.addArgument(
+    ['-l', '--language'],
+    {
+      help: 'Language code to use, defaults to en.'
+    }
+  );  
   argParser.addArgument(
     ['-o', '--out'],
     {

@@ -3,6 +3,7 @@ import path = require('path');
 
 export class Agent {
   private _path: string
+  private _lang: string;
   private readonly INTENTS: string = 'intents';
   private _intents: Array<object>;
 
@@ -25,8 +26,13 @@ export class Agent {
 		this._intents = value;
 	}
   
-  constructor(path: string) {
+  constructor(path: string, lang: string) {
     this._path = path;
+    if (lang) {
+      this._lang = lang;
+    } else {
+      this._lang = "en"
+    }
     this._intents = [];
   }
   
@@ -53,15 +59,12 @@ export class Agent {
       const fname: string = path.basename(element, '.json');
       let insert: boolean = true;
       for (let [key, val] of intentsMap) {
-        // ONLY SUPPORTS ENGLISH SO FAR
-        if (fname === key + '_usersays_en') {
+        if (fname === key + '_usersays_' + this._lang) {
           (<any> val).userSays = (<any> parsedFile).map((k: any) => k.data[0].text);
           insert = false;
           break;
-        // TODO: (atulep) hacky way to check for non-english agents
-        } else if (fname.includes('_usersays_') && !fname.includes('_usersays_en')) {
-          const locale = fname.slice(fname.lastIndexOf('_usersays_') + '_usersays_'.length);
-          throw new Error(`Currently, this software doesn't support ${locale} locale.`);
+        } else if (fname.includes('_usersays_') && !fname.includes('_usersays_' + this._lang)) {
+          throw new Error(`The language ${this._lang} was not found in your Agent.`);
         }
       }
       if (insert) intentsMap.set(fname, parsedFile);

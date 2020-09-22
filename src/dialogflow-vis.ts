@@ -10,9 +10,10 @@ import { IO } from './io';
 const argparser = initArgumentParser();
 let args = argparser.parseArgs();
 let io = new IO(args.file, args.out);
+let lang = args.language;
 
 try {
-  const parser: DialogflowParser = new DialogflowParser(new Agent(io.in));
+  const parser: DialogflowParser = new DialogflowParser(new Agent(io.in, lang));
   let graph = parser.parse();
   const codegen: AgentCodegen = new AgentHtmlCodegen(graph);
   // TODO: (atulep) Add semantics for distinguishing start nodes in the AoG agent.
